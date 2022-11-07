@@ -1,6 +1,4 @@
-using Sandbox;
-using System;
-using System.Linq;
+﻿using Tools;
 
 // - SFMDX -
 // Source Filmmaker in S&box
@@ -28,11 +26,25 @@ using System.Linq;
 
 namespace SFMDX;
 
-// <summary>
-// Session class, used to store session data
-// </summary>
-
-public class Session
+public class Viewport: DockWidget
 {
-    //public DmElement RootElement { get; set; }
+	public Viewport( string title, string icon = null, Widget parent = null, string name = null ) : base( title, icon, parent, name )
+	{
+	}
+}
+
+[Dock( "SFMDX", "Primary Viewport", "videocam" )]
+public class PrimaryViewport : Viewport
+{
+	public PrimaryViewport( string title, string icon = null, Widget parent = null, string name = null ) : base( title, icon, parent, name )
+	{
+	}
+}
+
+[Dock( "SFMDX", "Secondary Viewport", "videocam" )]
+public class SecondaryViewport : Viewport
+{
+	public SecondaryViewport( string title, string icon = null, Widget parent = null, string name = null ) : base( title, icon, parent, name )
+	{
+	}
 }

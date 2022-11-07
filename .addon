@@ -1,29 +1,17 @@
 {
   "Title": "SFMDX",
-  "Type": "game",
+  "Type": "tool",
   "Org": "kiwifruitdev",
   "Ident": "sfmdx",
   "Tags": "",
   "Schema": 1,
-  "HasAssets": false,
+  "HasAssets": true,
   "AssetsPath": "",
-  "ResourcePaths": [],
+  "ResourcePaths": null,
   "HasCode": true,
-  "CodePath": "/code/",
-  "RootNamespace": null,
+  "CodePath": "code",
+  "RootNamespace": "Tools",
   "Metadata": {
-    "MaxPlayers": 1,
-    "MinPlayers": 1,
-    "GameNetworkType": "Singleplayer",
-    "MapSelect": "Unrestricted",
-    "MapList": [],
-    "RankType": "None",
-    "PerMapRanking": false,
-    "LeaderboardType": "None",
-    "ProjectTemplate": null,
-    "ParentPackage": "",
-    "GeneralExtensions": true,
-    "TargettedExtensions": true,
-    "ExtensionApiVersion": 1001
+    "ProjectTemplate": null
   }
 }

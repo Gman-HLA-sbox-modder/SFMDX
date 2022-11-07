@@ -1,9 +1,4 @@
-﻿using Sandbox;
-using Sandbox.UI.Construct;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Tools;
 
 // - SFMDX -
 // Source Filmmaker in S&box
@@ -31,35 +26,39 @@ using System.Threading.Tasks;
 
 namespace SFMDX;
 
-/// <summary>
-/// This is your game class. This is an entity that is created serverside when
-/// the game starts, and is replicated to the client. 
-/// 
-/// You can use this to create things like HUDs and declare which player class
-/// to use for spawned players.
-/// </summary>
-public partial class MyGame : Sandbox.Game
+[Dock( "SFMDX", "Animation Set Editor", "accessibility_new" )]
+public class AnimationSetEditor : DockWidget
 {
-	public MyGame()
+	Color color;
+
+	public AnimationSetEditor( string title, string icon = null, Widget parent = null, string name = null ) : base( title, icon, parent, name )
 	{
-		if ( IsClient )
+		// Layout top to bottom
+		SetLayout( LayoutMode.TopToBottom );
+
+		var button = new Button( "Change Color", "color_lens" );
+		button.Clicked = () =>
 		{
-			// Create the HUD
-			Local.Hud = new EditorHUD();
-		}
+			color = Color.Random;
+			Update();
+		};
+
+		// Fill the top
+		Layout.AddStretchCell();
+
+		// Add a new layout cell to the bottom
+		var bottomRow = Layout.Add( LayoutMode.LeftToRight );
+		bottomRow.Margin = 16;
+		bottomRow.AddStretchCell();
+		bottomRow.Add( button );
 	}
 
-	/// <summary>
-	/// A client has joined the server. Make them a pawn to play with
-	/// </summary>
-	public override void ClientJoined( Client client )
+	protected override void OnPaint()
 	{
-		base.ClientJoined( client );
+		base.OnPaint();
 
-		// Create a pawn for this client to play with
-		// The pawn will spawn at 0, 0, 0 by default
-		// This is to replicate SFM behaviour but can be changed later
-		var pawn = new Pawn();
-		client.Pawn = pawn;
+		Paint.ClearPen();
+		Paint.SetBrush( color );
+		Paint.DrawRect( LocalRect );
 	}
 }

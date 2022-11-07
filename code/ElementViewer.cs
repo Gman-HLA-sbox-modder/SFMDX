@@ -1,6 +1,4 @@
-﻿using Sandbox;
-using System;
-using System.Linq;
+﻿using Tools;
 
 // - SFMDX -
 // Source Filmmaker in S&box
@@ -28,18 +26,10 @@ using System.Linq;
 
 namespace SFMDX;
 
-// <summary>
-// Puppet clientside model
-// This is what displays models in scenes
-// </summary>
-
-partial class Puppet : ModelEntity
+[Dock( "SFMDX", "Element Viewer", "article" )]
+public class ElementViewer: DockWidget
 {
-	public override void Spawn()
+	public ElementViewer( string title, string icon = null, Widget parent = null, string name = null ) : base( title, icon, parent, name )
 	{
-		base.Spawn();
-		// Never transmit, this is strictly a clientside entity
-		Transmit = TransmitType.Never;
-		Predictable = false;
 	}
 }
