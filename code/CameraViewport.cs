@@ -26,25 +26,9 @@
 
 namespace SFMDX;
 
-public class Viewport: DockWidget
+public class Viewport : Widget
 {
-	public Viewport( string title, string icon = null, Widget parent = null, string name = null ) : base( title, icon, parent, name )
-	{
-	}
-}
-
-[Dock( "SFMDX", "Primary Viewport", "videocam" )]
-public class PrimaryViewport : Viewport
-{
-	public PrimaryViewport( string title, string icon = null, Widget parent = null, string name = null ) : base( title, icon, parent, name )
-	{
-	}
-}
-
-[Dock( "SFMDX", "Secondary Viewport", "videocam" )]
-public class SecondaryViewport : Viewport
-{
-	public SecondaryViewport( string title, string icon = null, Widget parent = null, string name = null ) : base( title, icon, parent, name )
+	public Viewport(Widget parent = null) : base(parent)
 	{
 	}
 }

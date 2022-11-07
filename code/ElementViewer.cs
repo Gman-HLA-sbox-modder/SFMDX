@@ -26,10 +26,9 @@
 
 namespace SFMDX;
 
-[Dock( "SFMDX", "Element Viewer", "article" )]
-public class ElementViewer: DockWidget
+public class ElementViewer : Widget
 {
-	public ElementViewer( string title, string icon = null, Widget parent = null, string name = null ) : base( title, icon, parent, name )
+	public ElementViewer(Widget parent = null) : base(parent)
 	{
 	}
 }

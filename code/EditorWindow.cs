@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Tools;
 
 // - SFMDX -
@@ -31,36 +32,96 @@ namespace SFMDX;
 [Tool( "SFMDX", "movie_filter", "Source Filmmaker: Director's Cut")]
 public class EditorWindow : Window
 {
-    public AnimationSetEditor AnimationSetEditor;
-    public ElementViewer ElementViewer;
-    public Timeline Timeline;
-    public PrimaryViewport PrimaryViewport;
-    public SecondaryViewport SecondaryViewport;
+    public List<DockWidget> DockWidgets;
+    private Menu windowsMenu;
 	public EditorWindow()
 	{
+        // Initialize window
 		Title = "Source Filmmaker: Director's Cut";
 		Size = new Vector2( 1600, 900 );
         Position = new Vector2( 0, 0 );
-		CreateUI();
-		Show();
+        DockWidgets = new();
+        // Initialize dock widgets
+        DockWidget animationSetEditor = ConstructDockWidget<AnimationSetEditor>("Animation Set Editor", "accessibility_new", DockArea.Left);
+        ConstructDockWidget<ElementViewer>("Element Viewer", "article", DockArea.Left, animationSetEditor);
+        DockWidget timeline = ConstructDockWidget<Timeline>("Timeline", "theaters", DockArea.Bottom);
+        ConstructDockWidget<Viewport>("Viewport", "videocam", DockArea.Top);
+        ConstructDockWidget<AssetBrowser>("Asset Browser", "ManageSearch", DockArea.Bottom, timeline);
+        BuildMenu(); // Build menu bar
+		Show(); // Show window
 	}
+
+    // use "this" as parent when constructing widgets
+    public DockWidget ConstructDockWidget<T>(string title = "", string icon = null, DockArea dockArea = DockArea.Right, DockWidget parent = null) where T : Widget
+    {
+        ConstructorInfo constructorInfo = typeof(T).GetConstructor(new[] { typeof(Widget) });
+        Widget widget;
+        if (constructorInfo != null)
+        {
+            widget = (Widget)constructorInfo.Invoke(new object[] { this });
+        }
+        else
+        {
+            Log.Error("Could not find constructor for type " + typeof(T).FullName);
+            return null;
+        }
+        DockWidget dockWidget = new DockWidget(title, icon, this, typeof(T).FullName)
+        {
+            Widget = widget
+        };
+        DockWidgets.Add(dockWidget);
+        Dock(dockWidget, dockArea, parent);
+        return dockWidget;
+    }
+
+    /*
+    public DockWidget ConstructDockWidget(string type, string title = "", string icon = null, DockArea dockArea = DockArea.Right, DockWidget parent = null)
+    {
+        Type dockWidgetType = Type.GetType(type);
+        if (dockWidgetType == null)
+        {
+            Log.Error("Could not find type " + type);
+            return null;
+        }
+        DockWidget dockWidget = new DockWidget(title, icon, this, type)
+        {
+            Widget = (Widget)Activator.CreateInstance(dockWidgetType)
+        };
+        if (dockWidget.Widget == null)
+        {
+            Log.Error("Could not create instance of type " + type);
+            return null;
+        }
+        DockWidgets.Add(dockWidget);
+        Dock(dockWidget, dockArea, parent);
+        return dockWidget;
+    }
+    */
+
+    public void LoadMap()
+    {
+        // Pop up asset browser and filter by map
+    }
 
 	public void BuildMenu()
 	{
+        // Top level menus (non-functional)
 		Menu fileMenu = MenuBar.AddMenu( "File" );
 		fileMenu.AddOption( "Open" );
 		fileMenu.AddOption( "Save" );
+        fileMenu.AddOption( "Save As" );
+        fileMenu.AddOption( "Load Map" ).Triggered += () => LoadMap();
 		fileMenu.AddOption( "Quit" ).Triggered += () => Close();
         Menu editMenu = MenuBar.AddMenu( "Edit" );
         editMenu.AddOption( "Undo" );
         editMenu.AddOption( "Redo" );
         // Toggle windows
-        Menu windowsMenu = MenuBar.AddMenu( "Windows" );
-        windowsMenu.AddOption(AnimationSetEditor.GetToggleViewOption());
-        windowsMenu.AddOption(ElementViewer.GetToggleViewOption());
-        windowsMenu.AddOption(Timeline.GetToggleViewOption());
-        windowsMenu.AddOption(PrimaryViewport.GetToggleViewOption());
-        windowsMenu.AddOption(SecondaryViewport.GetToggleViewOption());
+        windowsMenu = MenuBar.AddMenu( "Windows" );
+        for(int i = 0; i < DockWidgets.Count; i++)
+        {
+            windowsMenu.AddOption(DockWidgets[i].GetToggleViewOption());
+        }
+        // TODO: Add more menus
         Menu viewMenu = MenuBar.AddMenu( "View" );
         viewMenu.AddOption( "TODO" );
         Menu scriptsMenu = MenuBar.AddMenu( "Scripts" );
@@ -69,30 +130,10 @@ public class EditorWindow : Window
         helpMenu.AddOption( "TODO" );
 	}
 
-	public void CreateUI()
-	{
-		Clear();
-        AnimationSetEditor = new AnimationSetEditor("Animation Set Editor", "accessibility_new", this, "AnimationSetEditor");
-        Dock(AnimationSetEditor, DockArea.Left); // Fill left side
-        AnimationSetEditor.Show();
-        ElementViewer = new ElementViewer("Element Viewer", "article", this, "ElementViewer");
-        Dock(ElementViewer, DockArea.Left); // Fill left side
-        ElementViewer.Show();
-        Timeline = new Timeline("Timeline", "theaters", this, "Timeline");
-        Dock(Timeline, DockArea.Bottom); // Fill bottom
-        Timeline.Show();
-        PrimaryViewport = new PrimaryViewport("Primary Viewport", "videocam", this, "PrimaryViewport");
-        Dock(PrimaryViewport, DockArea.Top); // Fill top
-        PrimaryViewport.Show();
-        SecondaryViewport = new SecondaryViewport("Secondary Viewport", "videocam", this, "SecondaryViewport");
-        Dock(SecondaryViewport, DockArea.Top); // Fill top
-        SecondaryViewport.Show();
-		BuildMenu();
-	}
-
 	[Sandbox.Event.Hotload]
 	public void OnHotload()
 	{
-		CreateUI();
+        Clear();
+        Close();
 	}
 }

@@ -1,4 +1,4 @@
-﻿using Tools;
+using Tools;
 
 // - SFMDX -
 // Source Filmmaker in S&box
@@ -26,9 +26,10 @@
 
 namespace SFMDX;
 
-public class Timeline: Widget
+public class Session
 {
-	public Timeline(Widget parent = null) : base(parent)
-	{
-	}
+	public Session()
+    {
+        
+    }
 }

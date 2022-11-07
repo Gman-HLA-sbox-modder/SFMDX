@@ -1,4 +1,5 @@
-﻿using Tools;
+﻿using Sandbox;
+using Tools;
 
 // - SFMDX -
 // Source Filmmaker in S&box
@@ -26,12 +27,11 @@
 
 namespace SFMDX;
 
-[Dock( "SFMDX", "Animation Set Editor", "accessibility_new" )]
-public class AnimationSetEditor : DockWidget
+public class AnimationSetEditor : Widget
 {
 	Color color;
 
-	public AnimationSetEditor( string title, string icon = null, Widget parent = null, string name = null ) : base( title, icon, parent, name )
+	public AnimationSetEditor(Widget parent = null) : base(parent)
 	{
 		// Layout top to bottom
 		SetLayout( LayoutMode.TopToBottom );
